@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaosai.shorturl.mapping.UrlDao">
+	<resultMap id="BaseResultMap" type="com.gaosai.shorturl.entity.TableUrl">
+		<id column="code" jdbcType="BIGINT" property="code" />
+		<result column="shorturl" jdbcType="VARCHAR" property="shorturl" />
+		<result column="longurl" jdbcType="VARCHAR" property="longurl" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		code, shorturl, longurl
+	</sql>
+
+	<insert id="insert">
+		insert into t_url_#{table_id}
+		( code, shorturl,
+		longurl ) values
+		( #{code}, #{shorturl}, #{longurl} )
+	</insert>
+
+	<select id="selectByCode" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_url_#{table_id}
+		where code = #{code}
+	</select>
+
+	<select id="selectByLong" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_url_#{table_id}
+		where longurl = #{longurl}
+	</select>
+	
+	<update id="createTable">
+        create table t_url_#{table_id} 
+        (
+          `code` bigint(20) NOT NULL,
+		  `shorturl` varchar(6) NOT NULL,
+		  `longurl` varchar(50) NOT NULL,
+		  PRIMARY KEY (`code`)
+        )
+    </update>
+
+</mapper>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>短链接Web服务系统</title>
+<!-- 页面描述 -->
+<meta name="description" content="短链接Web服务系统" />
+<!-- 页面关键词 -->
+<meta name="keywords" content="短链接" />
+<!-- 网页作者 -->
+<meta name="author" content="gaosai gaosaibike@163.com" />
+<!-- 为移动设备添加 viewport -->
+<meta name="viewport"
+	content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+
+<!-- 引入样式 -->
+<link rel="stylesheet"
+	href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<style>
+body {
+	padding: 0;
+	margin: 0;
+}
+
+.header {
+	background-color: #2e9fff;
+	height: 45px;
+	padding: 16px;
+}
+
+.header span {
+	margin-left: 32px;
+	font-size: 20px;
+	color: white;
+	line-height: 45px;
+	font-size: 20px;
+}
+
+.container {
+	/*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	background-clip: padding-box;
+	margin: 180px auto;
+	width: 400px;
+	padding: 35px 35px 15px 35px;
+	background: #fff;
+	border: 1px solid #eaeaea;
+	box-shadow: 0 0 25px #cac6c6;
+}
+</style>
+</head>
+<body>
+
+	<div id="app">
+		<div class="header">
+			<span>短链接服务系统</span>
+		</div>
+		<div class="container">
+			<el-tabs tab-position="top" style="height: 200px;"> 
+				<el-tab-pane label="长连接转短链接">
+					<el-form :inline="true" :model="l2s">
+						<el-form-item>
+					    	<el-input v-model="l2s.url" style="width:300px;" placeholder="长链接"></el-input>
+					    </el-form-item>
+					    <el-form-item>
+						    <el-button type="primary" @click="onSubmitL2S">查询</el-button>
+						</el-form-item>
+					</el-form-item>
+					<p>
+					{{l2sHint}}
+					</p>
+				</el-tab-pane> 
+				<el-tab-pane label="短链接转长链接">
+					<el-form :inline="true" :model="s2l">
+						<el-form-item>
+					    	<el-input v-model="s2l.url" style="width:300px;" placeholder="短链接"></el-input>
+					    </el-form-item>
+					    <el-form-item>
+						    <el-button type="primary" @click="onSubmitS2L">查询</el-button>
+						</el-form-item>
+					</el-form-item>
+					<p>
+					{{s2lHint}}
+					</p>
+				</el-tab-pane>
+			</el-tabs>
+		</div>
+		
+	</div>
+
+	<!-- import Vue.js -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.min.js"></script>
+	<!-- 引入组件库 -->
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<!-- ajax -->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<script>
+		v = new Vue({
+			el : '#app',
+			data : {
+				s2l:{
+					url:''
+				},
+				l2s:{
+					url:''
+				},
+				l2sHint:'',
+				s2lHint:''
+			},
+			methods: {
+			    onSubmitL2S() {
+			    	var $vue = this;
+		            $.ajax({
+		              url: 'createshorturl',
+		              data:$vue.l2s,
+		              cache:false,
+		              type: 'POST',
+		              dataType:'json',
+		              timeout:2000,
+		              success:function( res ){
+		                if( res.data != null ){
+		                	$vue.l2sHint = '短链接地址为：' + res.data;
+		                }else{
+		                 	$vue.l2sHint = res.msg;
+		                }
+		              },
+		              error:function(a,b,c){
+		                $vue.l2sHint = '系统发生错误,请联系管理员';
+		              }
+		            });
+			    },
+			    onSubmitS2L() {
+			    	var $vue = this;
+		            $.ajax({
+		              url: 'getlongurl',
+		              data:$vue.s2l,
+		              cache:false,
+		              type: 'POST',
+		              dataType:'json',
+		              timeout:2000,
+		              success:function( res ){
+		                if( res.data != null ){
+		                	$vue.s2lHint = '长链接地址为：' + res.data;
+		                }else{
+		                 	$vue.s2lHint = res.msg;
+		                }
+		              },
+		              error:function(a,b,c){
+		                $vue.s2lHint = '系统发生错误,请联系管理员';
+		              }
+		            });
+			    }
+			}
+		});
+	</script>
+
+</body>
+</html>
